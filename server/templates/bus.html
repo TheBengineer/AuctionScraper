@@ -1,28 +1,39 @@
 <div class="bus">
     <div>
-        <a href="https://www.govdeals.com/en/asset/{{busses[bus_id]['assetId']}}/{{busses[bus_id]['accountId']}}">
-        <span>{{busses[bus_id]['assetShortDescription']}}</span>
-        <span><b>${{busses[bus_id]['currentBid']}}</b></span>
-            </ahref>
+        <a target="_blank" href="https://www.govdeals.com/en/asset/{{busses[bus_id].get('assetId', '')}}/{{busses[bus_id].get('accountId', '')}}">
+            <span>{{busses[bus_id].get('assetShortDescription', '')}}</span>
+            <span><b>${{busses[bus_id].get('currentBid', '')}}</b></span>
+        </a>
+        <span>Bids: {{busses[bus_id].get('numberOfBids', '0')}}</span>
     </div>
     <div>
-        <span>{{busses[bus_id]['timeRemaining']}}</span>
+        <span>{{busses[bus_id].get('timeRemaining', '')}}</span>
     </div>
-    <a href="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id]['accountId']}}/{{busses[bus_id]['photo']}}">
-        <img src="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id]['accountId']}}/{{busses[bus_id]['photo']}}"
+    <a target="_blank" href="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id].get('accountId', '')}}/{{busses[bus_id].get('photo', '')}}">
+        <img src="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id].get('accountId', '')}}/{{busses[bus_id].get('photo', '')}}"
              alt="Bus"/>
     </a>
     <div>
-        <span>{{busses[bus_id]['modelYear']}}</span>
-        <span>{{busses[bus_id]['makebrand']}}</span>
-        <span>{{busses[bus_id]['model']}}</span>
+        <span>{{busses[bus_id].get('modelYear', '')}}</span>
+        <span>{{busses[bus_id].get('makebrand', '')}}</span>
+        <span>{{busses[bus_id].get('model', '')}}</span>
     </div>
     <div>
-        <span>{{busses[bus_id]['locationCity']}}</span>
-        <span>{{busses[bus_id]['locationState']}}</span>
-        <span>{{busses[bus_id]['locationZip']}}</span>
-        <span>({{busses[bus_id]['proximityDistance']}} miles)</span>
+        <a target="_blank" href="https://www.google.com/maps/dir/149+Elmina+Dr,+Toccoa,+GA+30577-7462,+USA/{{busses[bus_id].get('locationZip', '')}}">
+            <span>{{busses[bus_id].get('locationCity', '')}}</span>
+            <span>{{busses[bus_id].get('locationState', '')}}</span>
+            <span>{{busses[bus_id].get('locationZip', '')}}</span>
+            <span>({{busses[bus_id].get('proximityDistance', '')}} miles)</span>
+        </a>
     </div>
-
-    <div>{{bus_id}}</div>
+    <div class="buttons">
+        <button type="submit" onclick="hide_bus('{{bus_id}}')">Hide</button>
+    </div>
+    <div class="description">
+        <span>{{busses[bus_id].get('assetLongDesc', '') |safe}}</span>
+    </div>
+    <div>
+        <a target="_blank" href="/bus/{{bus_id}}">{{bus_id}}</a>
+        <a target="_blank" href="/details/{{bus_id}}">Load Details</a>
+    </div>
 </div>

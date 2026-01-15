@@ -56,3 +56,4 @@ venv/
 /data/asdf.json
 /data/walmart_sellers.json
 /data/nextdoor*
+/server/data/busses_*

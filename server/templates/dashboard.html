@@ -14,7 +14,9 @@
 </div>
 <div id="busses">
     {% for bus_id in busses %}
+    {% if not busses[bus_id].get("hidden",false) %}
     {% include 'bus.html' %}
+    {% endif %}
     {% endfor %}
 </div>
 </body>
