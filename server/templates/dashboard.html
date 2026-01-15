@@ -1,0 +1,20 @@
+<!doctype html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='mainpage.css') }}">
+</head>
+<body>
+<script src="{{ url_for('static',filename='mainpage.js') }}">
+
+</script>
+<title>Busses</title>
+<h1>Busses</h1>
+<div class="buttons">
+    <button type="submit" onclick="reload()">Reload</button>
+    <button type="submit" onclick="scrape_new()">Scrape New</button>
+</div>
+<div id="busses">
+    {% for bus_id in busses %}
+    {% include 'bus.html' %}
+    {% endfor %}
+</div>
+</body>

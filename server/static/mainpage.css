@@ -1,0 +1,24 @@
+#busses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 360px));
+    gap: 1rem;
+    margin-bottom: 4rem;
+}
+
+.buttons {
+    border: 1px solid blue;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.bus {
+    border: 1px solid red;
+}
+
+.bus img {
+    height: auto;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+}
