@@ -1,3 +1,4 @@
+import jinja2
 from flask import Flask, render_template
 
 from busses import Busses
@@ -7,6 +8,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def dashboard():
+    app.busses.update()
     return render_template("dashboard.html", busses=app.busses.busses)
 
 

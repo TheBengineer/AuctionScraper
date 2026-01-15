@@ -1,8 +1,29 @@
 <div class="bus">
-    <div>{{busses[bus_id]['assetShortDescription']}}</div>
+    <div>
+        <a href="https://www.govdeals.com/en/asset/{{busses[bus_id]['assetId']}}/{{busses[bus_id]['accountId']}}">
+        <span>{{busses[bus_id]['assetShortDescription']}}</span>
+        <span><b>${{busses[bus_id]['currentBid']}}</b></span>
+            </ahref>
+    </div>
+    <div>
+        <span>{{busses[bus_id]['timeRemaining']}}</span>
+    </div>
     <a href="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id]['accountId']}}/{{busses[bus_id]['photo']}}">
         <img src="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id]['accountId']}}/{{busses[bus_id]['photo']}}"
              alt="Bus"/>
     </a>
+    <div>
+        <span>{{busses[bus_id]['modelYear']}}</span>
+        <span>{{busses[bus_id]['makebrand']}}</span>
+        <span>{{busses[bus_id]['model']}}</span>
+    </div>
+    <div>
+        <span>{{busses[bus_id]['locationCity']}}</span>
+        <span>{{busses[bus_id]['locationState']}}</span>
+        <span>{{busses[bus_id]['locationZip']}}</span>
+        <span>({{busses[bus_id]['proximityDistance']}} miles)</span>
+    </div>
+
+    <div>{{bus_id}}</div>
     <div>{{busses[bus_id]}}</div>
 </div>

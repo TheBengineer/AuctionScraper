@@ -123,6 +123,21 @@ class Busses:
                 self.busses[bus_id] = scanned_bus
         self.save_data()
 
+    def update(self):
+        for bus_id in self.busses:
+            updated_bus = self.update_bus(bus_id)
+            self.busses[bus_id] = updated_bus
+
+    def update_bus(self, bus_id):
+        bus = self.busses[bus_id]
+        auction_end_time = bus.get('assetAuctionEndDateUtc')
+        time_left = datetime.strptime(auction_end_time, '%Y-%m-%dT%H:%M:%SZ') - datetime.utcnow()
+        if time_left.total_seconds() <= 0:
+            bus['isSoldAuction'] = True
+        time_left_formatted = str(time_left)
+        bus['timeRemaining'] = time_left_formatted
+        return bus
+
 
 if __name__ == '__main__':
     b = Busses()
