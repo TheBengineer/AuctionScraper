@@ -16,11 +16,13 @@
             <img src="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id].get('accountId', '')}}/{{busses[bus_id].get('photo', '')}}"
                  alt="Bus"/>
         </a>
-
     </div>
-    <div>
-        {% for asset_photo in busses.get('assetPhotos',[]) %}
-        asset_photo
+    <div class="photo-row">
+        {% for asset_photo in busses[bus_id].get('assetPhotos',[]) %}
+        <a target="_blank"
+           href="https://webassets.lqdt1.com/assets{{asset_photo}}">
+            <img class='small' src="https://webassets.lqdt1.com/assets{{asset_photo}}" alt="Bus"/>
+        </a>
         {% endfor %}
     </div>
     <div>
@@ -34,17 +36,35 @@
             <span>{{busses[bus_id].get('locationCity', '')}}</span>
             <span>{{busses[bus_id].get('locationState', '')}}</span>
             <span>{{busses[bus_id].get('locationZip', '')}}</span>
-            <span>({{((((busses[bus_id].get('latitude', 0) - 34.5575333)**2  + (busses[bus_id].get('longitude', 0) - -83.2105234)**2)**0.5)/0.01711)}} Miles)</span>
+            <span>({{((((busses[bus_id].get('latitude', 0) - 34.5575333)**2  + (busses[bus_id].get('longitude', 0) - -83.2105234)**2)**0.5)/0.01711) | round(2)}} Miles)</span>
         </a>
     </div>
+    <div>
+        <a target="_blank"
+           href="https://vpic.nhtsa.dot.gov/decoder/Decoder?VIN={{busses[bus_id].get('vinserial', '')}}">
+            <span>{{busses[bus_id].get('vinserial', '')}}</span>
+        </a>
+    </div>
+
+
     <div class="buttons">
         <button type="submit" onclick="hide_bus('{{bus_id}}')">Hide</button>
+        <a target="_blank" href="/bus/{{bus_id}}">{{bus_id}}</a>
+        <a target="_blank" href="/details/{{bus_id}}">Load Details</a>
+    </div>
+    <div class="detections">
+        {% if "7.6" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "466" in busses[bus_id].get('assetLongDesc', '')  %}<span><b>DT466e</b></span>{% endif%}
+        {% if "7.2" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "3126" in busses[bus_id].get('assetLongDesc', '')  %}<span><b>CAT 3126</b></span>{% endif%}
+        {% if "6.7" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "cummin" in busses[bus_id].get('assetLongDesc', '')  %}<span><b>Cummins</b></span>{% endif%}
+        {% if "6.4" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') %}<span><b>V8</b></span>{% endif%}
+        {% if "10.3" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "c10" in busses[bus_id].get('assetLongDesc', '')  %}<span><b>C10</b></span>{% endif%}
+    </div>
+    <div class="note" id="note_{{bus_id}}">
+        <label>
+            <textarea oninput="update_note(this)" data-id="{{bus_id}}">{{busses[bus_id].get('note', '')}}</textarea>
+        </label>
     </div>
     <div class="description">
         <span>{{busses[bus_id].get('assetLongDesc', '') |safe}}</span>
-    </div>
-    <div>
-        <a target="_blank" href="/bus/{{bus_id}}">{{bus_id}}</a>
-        <a target="_blank" href="/details/{{bus_id}}">Load Details</a>
     </div>
 </div>

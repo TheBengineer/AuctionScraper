@@ -111,6 +111,9 @@ class Busses(Thread):
             }
             self.bids[bus_id].append(bid_entry)
             self.new_bid_data = True
+            if bus_id in self.busses:
+                self.busses[bus_id]['currentBid'] = price
+                self.new_data = True
 
     def get_bus_details(self, bus_id):
         account_id, asset_id = self.bus_id_to_asset_id(bus_id)
@@ -229,12 +232,11 @@ class Busses(Thread):
             self.new_data = True
             self.save_data()
 
-
     def run(self):
         while self.go:
             now = datetime.utcnow()
             if (now - self.last_update).total_seconds() > 300:
-                print("Automatic update of bus data...")
+                print(f"Automatic update of bus data... {now.isoformat()}")
                 self.update()
                 self.last_update = now
             time.sleep(.5)

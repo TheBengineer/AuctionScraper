@@ -1,4 +1,5 @@
 from flask import Flask, render_template, jsonify
+from flask import request
 
 from busses import Busses
 
@@ -34,7 +35,6 @@ def bus_details(bus_id):
     return jsonify(details)
 
 
-
 @app.route("/bids")
 def show_bids():
     return jsonify(app.busses.bids)
@@ -43,6 +43,19 @@ def show_bids():
 @app.route("/bids/<bus_id>")
 def show_bid(bus_id):
     return jsonify(app.busses.bids.get(bus_id, []))
+
+
+@app.route("/note/<bus_id>", methods=['POST', "GET"])
+def notes(bus_id):
+    if request.method == 'POST':
+        request_data = request.get_json(force=True)
+        note = request_data.get("note", "")
+        if bus_id in app.busses.bids:
+            app.busses.busses[bus_id]['note'] = note
+            app.busses.new_data = True
+            app.busses.save_data()
+            return f"Note added to bus {bus_id}: {note}"
+    return jsonify(app.busses.busses.get(bus_id, {}).get("note", ""))
 
 
 if __name__ == "__main__":

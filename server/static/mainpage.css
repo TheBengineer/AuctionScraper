@@ -11,6 +11,15 @@
     gap: 1rem;
 }
 
+.detections {
+    border: 1px solid #5e00ff;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    min-height: 20px;
+    color: red;
+}
+
 .bus {
     border: 1px solid black;
     border-radius: 10px;
@@ -24,7 +33,26 @@
     padding: 5px;
     box-sizing: border-box;
 }
+.bus .photo-row {
+    overflow-x: scroll;
+    display: flex;
+    gap: 5px;
+}
+
+.bus img.small {
+    height: 50px;
+    width: auto;
+    padding: 0;
+}
 
 .bus .description {
     padding: 5px;
+}
+.note textarea {
+    width: 98%;
+    height: 100px;
+}
+
+.note .unsaved{
+    background-color: rgba(255, 0, 0, 0.05);
 }
