@@ -9,10 +9,18 @@
     <div>
         <span>{{busses[bus_id].get('timeRemaining', '')}}</span>
     </div>
+    <div>
     <a target="_blank" href="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id].get('accountId', '')}}/{{busses[bus_id].get('photo', '')}}">
         <img src="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id].get('accountId', '')}}/{{busses[bus_id].get('photo', '')}}"
              alt="Bus"/>
     </a>
+
+    </div>
+    <div>
+        {% for asset_photo in busses.get('assetPhotos',[]) %}
+            asset_photo
+        {% endfor %}
+    </div>
     <div>
         <span>{{busses[bus_id].get('modelYear', '')}}</span>
         <span>{{busses[bus_id].get('makebrand', '')}}</span>

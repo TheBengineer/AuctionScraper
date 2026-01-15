@@ -1,4 +1,3 @@
-import jinja2
 from flask import Flask, render_template, jsonify
 
 from busses import Busses

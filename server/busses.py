@@ -8,6 +8,7 @@ import json
 class Busses:
     def __init__(self):
         self.busses = {}
+        self.new_data = False
         self.load_existing_data()
 
     def get_new_busses(self):
@@ -119,13 +120,15 @@ class Busses:
             'siteId': 1,
         }
 
-        response = requests.post(f'https://maestro.lqdt1.com/assets/{asset_id}/{account_id}/false', headers=headers, json=json_data)
+        response = requests.post(f'https://maestro.lqdt1.com/assets/{asset_id}/{account_id}/false', headers=headers,
+                                 json=json_data)
         data = response.json()
         new_asset_id = data.get('assetId')
         new_account_id = data.get('accountId')
         new_bus_id = self.bus_id_from_asset_id(new_account_id, new_asset_id)
         if new_bus_id == bus_id:
             self.busses[bus_id].update(data)
+            self.new_data = True
         return data
 
     @staticmethod
@@ -146,14 +149,14 @@ class Busses:
         self.busses = {}
 
     def save_data(self):
+        if not self.new_data:
+            return
         if os.path.exists('data/busses.json'):
             current_date = datetime.now()
             os.rename('data/busses.json', f'data/busses_{current_date.strftime("%Y%m%d_%H%M%S")}.json')
         with open('data/busses.json', 'w', encoding='utf-8') as f:
             json.dump(self.busses, f, ensure_ascii=False, indent=4)
-
-    def scan_bus(self, bus):
-        return bus
+        self.new_data = False
 
     def reload(self):
         new_busses = self.get_new_busses()
@@ -161,8 +164,8 @@ class Busses:
             bus = new_busses[bus_id]
             if bus_id not in self.busses:
                 print(f"New bus found: {bus.get('title')} (ID: {bus_id})")
-                scanned_bus = self.scan_bus(bus)
-                self.busses[bus_id] = scanned_bus
+                self.busses[bus_id] = bus
+                self.new_data = True
         self.save_data()
 
     def update(self):
@@ -170,6 +173,7 @@ class Busses:
             print(f"Updating bus ID: {bus_id}")
             updated_bus = self.update_bus(bus_id)
             self.busses[bus_id] = updated_bus
+        self.save_data()
 
     def update_bus(self, bus_id):
         bus = self.busses[bus_id]
@@ -186,6 +190,7 @@ class Busses:
     def hide_bus(self, bus):
         if bus in self.busses:
             self.busses[bus]['hidden'] = True
+            self.new_data = True
             self.save_data()
 
 
