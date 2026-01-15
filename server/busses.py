@@ -8,7 +8,9 @@ import json
 class Busses:
     def __init__(self):
         self.busses = {}
+        self.bids = {}
         self.new_data = False
+        self.new_bid_data = False
         self.load_existing_data()
 
     def get_new_busses(self):
@@ -87,6 +89,24 @@ class Busses:
             busses[bus_id] = bus
         return busses
 
+    def update_bid_data(self, bus_id, bus_data):
+        price = bus_data.get('currentBid', 0.0)
+        if bus_id not in self.bids:
+            self.bids[bus_id] = []
+            self.new_bid_data = True
+        last_price = 0.0
+        for bid in self.bids[bus_id]:
+            bid_price = bid.get('price', 0.0)
+            if bid_price > last_price:
+                last_price = bid_price
+        if price > last_price:
+            bid_entry = {
+                'timestamp': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'price': price,
+            }
+            self.bids[bus_id].append(bid_entry)
+            self.new_bid_data = True
+
     def get_bus_details(self, bus_id):
         account_id, asset_id = self.bus_id_to_asset_id(bus_id)
         import requests
@@ -144,33 +164,43 @@ class Busses:
         if os.path.exists('data/busses.json'):
             with open('data/busses.json', 'r', encoding='utf-8') as f:
                 self.busses = json.load(f)
-                return
-        print("No existing busses.json file found. Starting fresh.")
-        self.busses = {}
+        else:
+            self.busses = {}
+        if os.path.exists('data/bids.json'):
+            with open('data/bids.json', 'r', encoding='utf-8') as f:
+                self.bids = json.load(f)
+        else:
+            self.bids = {}
 
     def save_data(self):
-        if not self.new_data:
-            return
-        if os.path.exists('data/busses.json'):
-            current_date = datetime.now()
-            os.rename('data/busses.json', f'data/busses_{current_date.strftime("%Y%m%d_%H%M%S")}.json')
-        with open('data/busses.json', 'w', encoding='utf-8') as f:
-            json.dump(self.busses, f, ensure_ascii=False, indent=4)
-        self.new_data = False
+        if self.new_data:
+            if os.path.exists('data/busses.json'):
+                current_date = datetime.now()
+                os.rename('data/busses.json', f'data/busses_{current_date.strftime("%Y%m%d_%H%M%S")}.json')
+            with open('data/busses.json', 'w', encoding='utf-8') as f:
+                json.dump(self.busses, f, ensure_ascii=False, indent=4)
+            self.new_data = False
+        if self.new_bid_data:
+            if os.path.exists('data/bids.json'):
+                current_date = datetime.now()
+                os.rename('data/bids.json', f'data/bids_{current_date.strftime("%Y%m%d_%H%M%S")}.json')
+            with open('data/bids.json', 'w', encoding='utf-8') as f:
+                json.dump(self.bids, f, ensure_ascii=False, indent=4)
+            self.new_bid_data = False
 
     def reload(self):
         new_busses = self.get_new_busses()
         for bus_id in new_busses:
             bus = new_busses[bus_id]
+            self.update_bid_data(bus_id, bus)
             if bus_id not in self.busses:
-                print(f"New bus found: {bus.get('title')} (ID: {bus_id})")
+                print(f"New bus found: {bus_id}")
                 self.busses[bus_id] = bus
                 self.new_data = True
         self.save_data()
 
     def update(self):
         for bus_id in self.busses:
-            print(f"Updating bus ID: {bus_id}")
             updated_bus = self.update_bus(bus_id)
             self.busses[bus_id] = updated_bus
         self.save_data()
@@ -178,6 +208,7 @@ class Busses:
     def update_bus(self, bus_id):
         bus = self.busses[bus_id]
         if not bus.get('assetLongDesc', False) and not bus.get('hidden', False):
+            print(f"Updating bus ID: {bus_id}")
             self.get_bus_details(bus_id)
         auction_end_time = bus.get('assetAuctionEndDateUtc')
         time_left = datetime.strptime(auction_end_time, '%Y-%m-%dT%H:%M:%SZ') - datetime.utcnow()

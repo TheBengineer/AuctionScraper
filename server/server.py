@@ -34,6 +34,16 @@ def bus_details(bus_id):
     return jsonify(details)
 
 
+@app.route("/bids")
+def show_bids():
+    return jsonify(app.busses.bids)
+
+
+@app.route("/bids/<bus_id>")
+def show_bid(bus_id):
+    return jsonify(app.busses.bids.get(bus_id, []))
+
+
 if __name__ == "__main__":
     busses = Busses()
     app.busses = busses

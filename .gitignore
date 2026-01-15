@@ -52,8 +52,5 @@ Thumbs.db
 venv/
 /venv/
 /venv-32/
-/data/*heatmap*
-/data/asdf.json
-/data/walmart_sellers.json
-/data/nextdoor*
 /server/data/busses_*
+/server/data/bids_*
