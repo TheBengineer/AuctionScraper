@@ -58,6 +58,8 @@
         {% if "6.7" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "cummin" in busses[bus_id].get('assetLongDesc', '')  %}<span><b>Cummins</b></span>{% endif%}
         {% if "6.4" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') %}<span><b>V8</b></span>{% endif%}
         {% if "10.3" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "c10" in busses[bus_id].get('assetLongDesc', '')  %}<span><b>C10</b></span>{% endif%}
+        {% if "545" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') %}<span><b>AT545</b></span>{% endif%}
+        {% if "ercedes" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "enz" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') %}<span><b>Mercedes</b></span>{% endif%}
     </div>
     <div class="note" id="note_{{bus_id}}">
         <label>
