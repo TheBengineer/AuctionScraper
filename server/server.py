@@ -62,4 +62,4 @@ if __name__ == "__main__":
     busses = Busses()
     busses.start()
     app.busses = busses
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

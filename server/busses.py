@@ -53,7 +53,7 @@ class Busses(Thread):
             'makebrand': '',
             'auctionTypeId': None,
             'page': 1,
-            'displayRows': 120,
+            'displayRows': 500,
             'sortField': 'bestfit',
             'sortOrder': 'desc',
             'sessionId': 'bcf4bb67-90f0-4ee7-868d-ed5ce0150989',
@@ -81,7 +81,7 @@ class Busses(Thread):
             'sellerTypeId': None,
             'accountIds': [],
             'zipcode': '30577',
-            'proximityWithinDistance': '250',
+            'proximityWithinDistance': '500',
         }
 
         response = requests.post('https://maestro.lqdt1.com/search/list', headers=headers, json=json_data)
