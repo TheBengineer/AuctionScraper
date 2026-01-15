@@ -1,17 +1,22 @@
 import os
+import time
 from datetime import datetime
+from threading import Thread
 
 import requests
 import json
 
 
-class Busses:
+class Busses(Thread):
     def __init__(self):
+        super().__init__()
         self.busses = {}
         self.bids = {}
         self.new_data = False
         self.new_bid_data = False
         self.load_existing_data()
+        self.go = True
+        self.last_update = datetime.utcnow()
 
     def get_new_busses(self):
         headers = {
@@ -223,6 +228,16 @@ class Busses:
             self.busses[bus]['hidden'] = True
             self.new_data = True
             self.save_data()
+
+
+    def run(self):
+        while self.go:
+            now = datetime.utcnow()
+            if (now - self.last_update).total_seconds() > 300:
+                print("Automatic update of bus data...")
+                self.update()
+                self.last_update = now
+            time.sleep(.5)
 
 
 if __name__ == '__main__':

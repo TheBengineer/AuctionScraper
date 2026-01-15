@@ -1,6 +1,7 @@
 <div class="bus">
     <div>
-        <a target="_blank" href="https://www.govdeals.com/en/asset/{{busses[bus_id].get('assetId', '')}}/{{busses[bus_id].get('accountId', '')}}">
+        <a target="_blank"
+           href="https://www.govdeals.com/en/asset/{{busses[bus_id].get('assetId', '')}}/{{busses[bus_id].get('accountId', '')}}">
             <span>{{busses[bus_id].get('assetShortDescription', '')}}</span>
             <span><b>${{busses[bus_id].get('currentBid', '')}}</b></span>
         </a>
@@ -10,15 +11,16 @@
         <span>{{busses[bus_id].get('timeRemaining', '')}}</span>
     </div>
     <div>
-    <a target="_blank" href="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id].get('accountId', '')}}/{{busses[bus_id].get('photo', '')}}">
-        <img src="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id].get('accountId', '')}}/{{busses[bus_id].get('photo', '')}}"
-             alt="Bus"/>
-    </a>
+        <a target="_blank"
+           href="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id].get('accountId', '')}}/{{busses[bus_id].get('photo', '')}}">
+            <img src="https://webassets.lqdt1.com/assets/photos/{{busses[bus_id].get('accountId', '')}}/{{busses[bus_id].get('photo', '')}}"
+                 alt="Bus"/>
+        </a>
 
     </div>
     <div>
         {% for asset_photo in busses.get('assetPhotos',[]) %}
-            asset_photo
+        asset_photo
         {% endfor %}
     </div>
     <div>
@@ -27,11 +29,12 @@
         <span>{{busses[bus_id].get('model', '')}}</span>
     </div>
     <div>
-        <a target="_blank" href="https://www.google.com/maps/dir/149+Elmina+Dr,+Toccoa,+GA+30577-7462,+USA/{{busses[bus_id].get('locationZip', '')}}">
+        <a target="_blank"
+           href="https://www.google.com/maps/dir/149+Elmina+Dr,+Toccoa,+GA+30577-7462,+USA/{{busses[bus_id].get('locationZip', '')}}">
             <span>{{busses[bus_id].get('locationCity', '')}}</span>
             <span>{{busses[bus_id].get('locationState', '')}}</span>
             <span>{{busses[bus_id].get('locationZip', '')}}</span>
-            <span>({{busses[bus_id].get('proximityDistance', '')}} miles)</span>
+            <span>({{((((busses[bus_id].get('latitude', 0) - 34.5575333)**2  + (busses[bus_id].get('longitude', 0) - -83.2105234)**2)**0.5)/0.01711)}} Miles)</span>
         </a>
     </div>
     <div class="buttons">
