@@ -42,10 +42,12 @@ class Busses(Thread):
             'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-            'x-api-correlation-id': 'ed1d50c3-bea5-4d14-997c-603cb92de3f2',
+            'x-api-correlation-id': '7c18ca94-2561-4bea-b38c-c8b078c5c89a',
             'x-api-key': 'af93060f-337e-428c-87b8-c74b5837d6cd',
+            'x-ecom-session-id': '9e0ac0d1-8f9f-4d3d-ac49-2d70c95de0eb',
+            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzI0NS8yNjIxNA=',
+            'x-referer': 'https://www.govdeals.com/en/asset/245/26214',
             'x-user-id': '3739238',
-            'x-referer': 'https://www.govdeals.com/en/search?kWord=bus',
             'x-user-timezone': 'America/New_York',
         }
         self.headers.update(headers)
