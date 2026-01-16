@@ -5,7 +5,7 @@
             <span>{{busses[bus_id].get('assetShortDescription', '')}}</span>
             <span><b>${{busses[bus_id].get('currentBid', '')}}</b></span>
         </a>
-        <span>Bids: {{busses[bus_id].get('numberOfBids', '0')}}</span>
+        <span>Bids: {{busses[bus_id].get('bidCount', '0')}}</span>
     </div>
     <div>
         <span>{{busses[bus_id].get('timeRemaining', '')}}</span>
@@ -58,6 +58,7 @@
         {% if "6.7" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "cummin" in busses[bus_id].get('assetLongDesc', '')  %}<span><b>Cummins</b></span>{% endif%}
         {% if "6.4" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') %}<span><b>V8</b></span>{% endif%}
         {% if "10.3" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "c10" in busses[bus_id].get('assetLongDesc', '')  %}<span><b>C10</b></span>{% endif%}
+        {% if "7.4" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "444" in busses[bus_id].get('assetLongDesc', '')  %}<span><b>T444e</b></span>{% endif%}
         {% if "545" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') %}<span><b>AT545</b></span>{% endif%}
         {% if "ercedes" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') or "enz" in busses[bus_id].get('assetLongDesc', '')+busses[bus_id].get('note', '') %}<span><b>Mercedes</b></span>{% endif%}
     </div>

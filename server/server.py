@@ -1,9 +1,13 @@
+import atexit
+import threading
+
 from flask import Flask, render_template, jsonify
 from flask import request
 
 from busses import Busses
 
 app = Flask(__name__)
+stop_event = threading.Event()
 
 
 @app.route("/")
@@ -58,8 +62,15 @@ def notes(bus_id):
     return jsonify(app.busses.busses.get(bus_id, {}).get("note", ""))
 
 
+@atexit.register
+def teardown():
+    stop_event.set()
+    app.busses.join()
+
+
+
 if __name__ == "__main__":
-    busses = Busses()
+    busses = Busses(stop_event)
     busses.start()
     app.busses = busses
     app.run(debug=True, host='0.0.0.0', port=5000)

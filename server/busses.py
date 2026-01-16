@@ -6,16 +6,19 @@ from threading import Thread
 import requests
 import json
 
+from tqdm import tqdm
+
 
 class Busses(Thread):
-    def __init__(self):
+    def __init__(self, stop_event=None):
         super().__init__()
+        self.daemon = True
         self.busses = {}
         self.bids = {}
         self.new_data = False
         self.new_bid_data = False
         self.load_existing_data()
-        self.go = True
+        self.stop_event = stop_event
         self.last_update = datetime.utcnow()
 
     def get_new_busses(self):
@@ -44,7 +47,7 @@ class Busses(Thread):
         }
 
         json_data = {
-            'categoryIds': '',
+            'categoryIds': '6',
             'businessId': 'GD',
             'searchText': 'bus',
             'isQAL': False,
@@ -155,8 +158,42 @@ class Busses(Thread):
         new_account_id = data.get('accountId')
         new_bus_id = self.bus_id_from_asset_id(new_account_id, new_asset_id)
         if new_bus_id == bus_id:
-            self.busses[bus_id].update(data)
+            for key, value in data.items():
+                if value is not None:
+                    self.busses[bus_id][key] = value
             self.new_data = True
+        return data
+
+    def get_bus_bids(self, bus_id):
+        account_id, asset_id = self.bus_id_to_asset_id(bus_id)
+        import requests
+
+        headers = {
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiJmMTBiYWZiYi04NjIxLTRlMjItOTI5ZC03NzY3NjQ2OTQzNGQiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NTI0Mzg1LCJleHAiOjE3Njg1Mjc5ODUsImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.uxZheWXDr5feNvxDYt3N2O2BERMI34egg6b9rmWOe84',
+            'Connection': 'keep-alive',
+            'Ocp-Apim-Subscription-Key': 'cf620d1d8f904b5797507dc5fd1fdb80',
+            'Origin': 'https://www.govdeals.com',
+            'Referer': 'https://www.govdeals.com/',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'cross-site',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+            'x-api-correlation-id': '243811f6-14f8-4c91-adde-2301a474ef9c',
+            'x-api-key': 'af93060f-337e-428c-87b8-c74b5837d6cd',
+            'x-ecom-session-id': '289e934a-f436-45f1-8ffd-6c0ba1463f06',
+            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzE2NTcvMTAyMzI',
+            'x-referer': 'https://www.govdeals.com/en/asset/1657/10232',
+            'x-user-id': '3739238',
+            'x-user-timezone': 'America/New_York',
+        }
+
+        response = requests.get(f'https://maestro.lqdt1.com/bids/bidbox/GD/{asset_id}/{account_id}/1', headers=headers)
+        data = response.json()
         return data
 
     @staticmethod
@@ -181,6 +218,7 @@ class Busses(Thread):
             self.bids = {}
 
     def save_data(self):
+        print("Saving bus data...")
         if self.new_data:
             if os.path.exists('data/busses.json'):
                 current_date = datetime.now()
@@ -208,15 +246,34 @@ class Busses(Thread):
         self.save_data()
 
     def update(self):
-        for bus_id in self.busses:
+        for bus_id in tqdm(self.busses.keys()):
             updated_bus = self.update_bus(bus_id)
             self.busses[bus_id] = updated_bus
+        self.save_data()
+
+    def update_bids(self):
+        for bus_id in tqdm(self.busses.keys()):
+            bus = self.busses[bus_id]
+            last_bid_update = bus.get('lastBidUpdate', '1970-01-01T00:00:00Z')
+            last_bid_update_dt = datetime.strptime(last_bid_update, '%Y-%m-%dT%H:%M:%SZ')
+            time_since_last_update = datetime.utcnow() - last_bid_update_dt
+            if time_since_last_update.total_seconds() < 300:
+                continue
+            if bus.get('assetLongDesc', False) and not bus.get('hidden', False):
+                bus_bids = self.get_bus_bids(bus_id)
+                for key, value in bus_bids.items():
+                    if value is not None:
+                        bus[key] = value
+                bus['lastBidUpdate'] = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+                self.new_data = True
+                self.update_bid_data(bus_id, bus)
         self.save_data()
 
     def update_bus(self, bus_id):
         bus = self.busses[bus_id]
         if not bus.get('assetLongDesc', False) and not bus.get('hidden', False):
             print(f"Updating bus ID: {bus_id}")
+            bus['assetLongDesc'] = "loading"
             self.get_bus_details(bus_id)
         auction_end_time = bus.get('assetAuctionEndDateUtc')
         time_left = datetime.strptime(auction_end_time, '%Y-%m-%dT%H:%M:%SZ') - datetime.utcnow()
@@ -224,6 +281,12 @@ class Busses(Thread):
             bus['isSoldAuction'] = True
         time_left_formatted = str(time_left)
         bus['timeRemaining'] = time_left_formatted
+        if not bus.get('latitude', True):
+            del bus['latitude']
+            self.new_data = True
+        if not bus.get('longitude', True):
+            del bus['longitude']
+            self.new_data = True
         return bus
 
     def hide_bus(self, bus):
@@ -233,13 +296,16 @@ class Busses(Thread):
             self.save_data()
 
     def run(self):
-        while self.go:
+        print("Busses thread started...")
+        while not self.stop_event.is_set():
             now = datetime.utcnow()
             if (now - self.last_update).total_seconds() > 300:
                 print(f"Automatic update of bus data... {now.isoformat()}")
                 self.update()
                 self.last_update = now
+                self.update_bids()
             time.sleep(.5)
+        print("Busses thread stopping...")
 
 
 if __name__ == '__main__':
