@@ -9,6 +9,8 @@ import json
 from tqdm import tqdm
 
 
+BUS_POLL_INTERVAL = 3600  # seconds
+
 class Busses(Thread):
     def __init__(self, stop_event=None):
         super().__init__()
@@ -267,7 +269,7 @@ class Busses(Thread):
             last_bid_update = bus.get('lastBidUpdate', '1970-01-01T00:00:00Z')
             last_bid_update_dt = datetime.strptime(last_bid_update, '%Y-%m-%dT%H:%M:%SZ')
             time_since_last_update = datetime.utcnow() - last_bid_update_dt
-            if time_since_last_update.total_seconds() < 3:
+            if time_since_last_update.total_seconds() < BUS_POLL_INTERVAL:
                 continue
             if bus.get('assetLongDesc', False) and not bus.get('hidden', False):
                 bus_bids = self.get_bus_bids(bus_id)
@@ -323,7 +325,7 @@ class Busses(Thread):
         print("Busses thread started...")
         while not self.stop_event.is_set():
             now = datetime.utcnow()
-            if (now - self.last_update).total_seconds() > 300:
+            if (now - self.last_update).total_seconds() > BUS_POLL_INTERVAL:
                 print(f"Automatic update of bus data... {now.isoformat()}")
                 self.update()
                 self.last_update = now
