@@ -265,11 +265,12 @@ class Busses(Thread):
             bus['assetLongDesc'] = "loading"
             self.get_bus_details(bus_id)
         auction_end_time = bus.get('assetAuctionEndDateUtc')
-        time_left = datetime.strptime(auction_end_time, '%Y-%m-%dT%H:%M:%SZ') - datetime.utcnow()
-        if time_left.total_seconds() <= 0:
-            bus['isSoldAuction'] = True
-        time_left_formatted = str(time_left)
-        bus['timeRemaining'] = time_left_formatted
+        if auction_end_time:
+            time_left = datetime.strptime(auction_end_time, '%Y-%m-%dT%H:%M:%SZ') - datetime.utcnow()
+            if time_left.total_seconds() <= 0:
+                bus['isSoldAuction'] = True
+            time_left_formatted = str(time_left)
+            bus['timeRemaining'] = time_left_formatted
         if not bus.get('latitude', True):
             del bus['latitude']
             self.new_data = True
@@ -286,8 +287,8 @@ class Busses(Thread):
 
     def add_lot(self, lot_id):
         if lot_id not in self.busses:
-            data = self.get_bus_details(lot_id)
-            self.busses[lot_id] = data
+            self.busses[lot_id] = {}
+            self.get_bus_details(lot_id)
             return True
         return False
 
