@@ -85,7 +85,7 @@ class Busses(Thread):
             'sellerTypeId': None,
             'accountIds': [],
             'zipcode': '30577',
-            'proximityWithinDistance': '500',
+            'proximityWithinDistance': '700',
         }
 
         response = requests.post('https://maestro.lqdt1.com/search/list', headers=headers, json=json_data)
