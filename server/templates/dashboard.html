@@ -12,9 +12,10 @@
     <button type="submit" onclick="reload()">Reload</button>
     <button type="submit" onclick="scrape_new()">Scrape New</button>
 </div>
+{{show_hidden}}
 <div id="busses">
     {% for bus_id in busses %}
-    {% if not busses[bus_id].get("hidden",false) %}
+    {% if not busses[bus_id].get("hidden",False) == True or show_hidden == True %}
     {% include 'bus.html' %}
     {% endif %}
     {% endfor %}

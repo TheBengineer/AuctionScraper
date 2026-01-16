@@ -13,7 +13,14 @@ stop_event = threading.Event()
 @app.route("/")
 def dashboard():
     app.busses.update()
-    return render_template("dashboard.html", busses=app.busses.busses)
+    return render_template("dashboard.html", busses=app.busses.busses, show_hidden=False)
+
+
+@app.route("/hidden")
+def dashboard_hidden():
+    app.busses.update()
+    return render_template("dashboard.html", busses=app.busses.busses, show_hidden=True)
+
 
 
 @app.route("/scrape_new")
