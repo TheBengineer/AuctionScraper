@@ -22,19 +22,28 @@ def dashboard_hidden():
     return render_template("dashboard.html", busses=app.busses.busses, show_hidden=True)
 
 
-
 @app.route("/scrape_new")
 def reload_data():
     logs = app.busses.reload()
     return "Data reloaded successfully!"
 
 
+@app.route("/add_lot/<lot_id>")
+def add_lot(lot_id):
+    success = app.busses.add_lot(lot_id)
+    if success:
+        msg = f"Lot {lot_id} added to busses"
+    else:
+        msg = f"Lot {lot_id} Failed to add"
+    print(msg)
+    return msg
 
 
 @app.route("/update_bids")
 def update_bids():
     logs = app.busses.update_bids()
     return "Bid data updated successfully!"
+
 
 @app.route("/bus/<bus_id>")
 def bus_data(bus_id):
@@ -80,7 +89,6 @@ def notes(bus_id):
 def teardown():
     stop_event.set()
     app.busses.join()
-
 
 
 if __name__ == "__main__":

@@ -226,8 +226,11 @@ class Busses(Thread):
             last_bid_update = bus.get('lastBidUpdate', '1970-01-01T00:00:00Z')
             last_bid_update_dt = datetime.strptime(last_bid_update, '%Y-%m-%dT%H:%M:%SZ')
             time_since_last_update = datetime.utcnow() - last_bid_update_dt
-            if bus.get('modelYear', 0) > 2010:
-                bus["hidden"] = True
+            try:
+                if int(bus.get('modelYear', 0)) > 2010:
+                    bus["hidden"] = True
+            except Exception:
+                pass
             if time_since_last_update.total_seconds() < BUS_POLL_INTERVAL:
                 continue
             if bus.get('assetLongDesc', False) and not bus.get('hidden', False):
@@ -279,6 +282,13 @@ class Busses(Thread):
             self.busses[bus]['hidden'] = True
             self.new_data = True
             self.save_data()
+
+    def add_lot(self, lot_id):
+        if lot_id not in self.busses:
+            data = self.get_bus_details(lot_id)
+            self.busses[lot_id] = data
+            return True
+        return False
 
     def run(self):
         print("Busses thread started...")

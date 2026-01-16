@@ -13,6 +13,14 @@ function update_bids() {
 }
 
 
+function new_lot() {
+    const lot_id = document.getElementById('new_lot').value;
+    console.log(lot_id);
+    fetch(`/add_lot/${lot_id}`)
+    return null;
+}
+
+
 function hide_bus(bus_id) {
     fetch(`/hide/${bus_id}`)
     return null;
