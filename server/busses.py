@@ -226,6 +226,8 @@ class Busses(Thread):
             last_bid_update = bus.get('lastBidUpdate', '1970-01-01T00:00:00Z')
             last_bid_update_dt = datetime.strptime(last_bid_update, '%Y-%m-%dT%H:%M:%SZ')
             time_since_last_update = datetime.utcnow() - last_bid_update_dt
+            if bus.get('modelYear', 0) > 2010:
+                bus["hidden"] = True
             if time_since_last_update.total_seconds() < BUS_POLL_INTERVAL:
                 continue
             if bus.get('assetLongDesc', False) and not bus.get('hidden', False):
