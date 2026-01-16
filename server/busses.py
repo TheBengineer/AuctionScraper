@@ -265,6 +265,7 @@ class Busses(Thread):
                     if value is not None:
                         bus[key] = value
                 bus['lastBidUpdate'] = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+                bus['currentBid'] = bus.get('assetBidPrice', 0.0)
                 self.new_data = True
                 self.update_bid_data(bus_id, bus)
         self.save_data()
