@@ -292,6 +292,31 @@ class Busses(Thread):
             return True
         return False
 
+    def bidders(self):
+        bidders = {}
+        print("Mapping bidders...")
+        for bus_id in tqdm(self.busses.keys()):
+            for bid in self.bids.get(bus_id, []):
+                bidder = bid.get('buyerId')
+                if bidder:
+                    if bidder not in bidders:
+                        bidders[bidder] = []
+                    bidders[bidder].append(bus_id)
+        graph = {"nodes": [], "links": []}
+        bus_ids = set()
+        bidder_ids = set()
+        for bidder, buses in bidders.items():
+            bidder_ids.add(bidder)
+            for bus_id in buses:
+                bus_ids.add(bus_id)
+                graph['links'].append({'source': bidder, 'target': bus_id})
+        for bus_id in bus_ids:
+            graph['nodes'].append({'id': bus_id, 'group': 'bus'})
+        for bidder in bidder_ids:
+            graph['nodes'].append({'id': bidder, 'group': 'bidder'})
+
+        return graph
+
     def run(self):
         print("Busses thread started...")
         self.setup_session()

@@ -85,6 +85,19 @@ def notes(bus_id):
     return jsonify(app.busses.busses.get(bus_id, {}).get("note", ""))
 
 
+
+@app.route("/bidders/")
+def bidders():
+    return jsonify(app.busses.bidders())
+
+
+@app.route("/bids/")
+def bids():
+    return render_template("bids.html")
+
+
+
+
 @atexit.register
 def teardown():
     stop_event.set()
