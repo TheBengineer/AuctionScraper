@@ -153,7 +153,6 @@ class Busses(Thread):
 
     def get_bus_bids(self, bus_id):
         account_id, asset_id = self.bus_id_to_asset_id(bus_id)
-        import requests
 
         json_data = {
             'auctionId': 1,
