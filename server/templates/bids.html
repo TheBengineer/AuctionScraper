@@ -10,35 +10,52 @@
 <div id="graph"></div>
 
 <script>
-    const imgs = ['cat.jpg', 'dog.jpg', 'eagle.jpg', 'elephant.jpg', 'grasshopper.jpg', 'octopus.jpg', 'owl.jpg', 'panda.jpg', 'squirrel.jpg', 'tiger.jpg', 'whale.jpg']
-        .map(src => {
-            const img = new Image();
-            img.src = `./imgs/${src}`;
-            return img;
-        });
-
-    // Random connected graph
-    const gData = {
-        nodes: imgs.map((img, id) => ({id, img})),
-        links: [...Array(imgs.length).keys()]
-            .filter(id => id)
-            .map(id => ({
-                source: id,
-                target: Math.round(Math.random() * (id - 1))
-            }))
-    };
     fetch('/bidders').then(res => res.json()).then(data => {
+        const imgs = {};
+        data.nodes.map(node => {
+            if (node.group === "bus") {
+                const img = new Image();
+                const busDetails = data.details[node.id]
+                img.src = `https://webassets.lqdt1.com/assets/photos/${busDetails.accountId}/${busDetails.photo}`
+                imgs[node.id] = img
+            }
+        })
+
+
         const Graph = new ForceGraph(document.getElementById('graph'))
-            .nodeCanvasObject(({img, x, y}, ctx) => {
-                const size = 12;
-                ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
+            .nodeCanvasObject(({id, group, color, x, y}, ctx) => {
+                if (group === "bus") {
+                    const size = 20;
+                    const img = imgs[id]
+                    ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
+
+                } else {
+                    const size = 4;
+                    ctx.fontSize = 4;
+                    const labelWidth = ctx.measureText(id).width;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, 2 * Math.PI);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.fillStyle = '#111';
+                    ctx.fillText(id, x - (labelWidth / 2.0), y);
+                }
             })
-            .nodePointerAreaPaint((node, color, ctx) => {
-                const size = 12;
-                ctx.fillStyle = color;
-                ctx.fillRect(node.x - size / 2, node.y - size / 2, size, size); // draw square as pointer trap
+            .onNodeClick((node) => {
+                console.log(node);
+                if (node.group === "bus") {
+                    const busDetails = data.details[node.id]
+                    const url = `https://www.govdeals.com/en/asset/${busDetails.assetId}/${busDetails.accountId}`
+                    window.open(url, '_blank');
+                }
             })
-            .graphData(gData);
+            .graphData(data)
+            .nodeId('id')
+            .nodeVal('val')
+            .nodeLabel('id')
+            .nodeAutoColorBy('group')
+            .linkSource('source')
+            .linkTarget('target')
     });
 </script>
 </body>

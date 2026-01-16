@@ -302,7 +302,7 @@ class Busses(Thread):
                     if bidder not in bidders:
                         bidders[bidder] = []
                     bidders[bidder].append(bus_id)
-        graph = {"nodes": [], "links": []}
+        graph = {"nodes": [], "links": [], "details": {}}
         bus_ids = set()
         bidder_ids = set()
         for bidder, buses in bidders.items():
@@ -310,11 +310,15 @@ class Busses(Thread):
             for bus_id in buses:
                 bus_ids.add(bus_id)
                 graph['links'].append({'source': bidder, 'target': bus_id})
+        for bus_id in tqdm(self.busses.keys()):
+            hidden = self.busses[bus_id].get('hidden', False)
+            if not hidden:
+                bus_ids.add(bus_id)
         for bus_id in bus_ids:
             graph['nodes'].append({'id': bus_id, 'group': 'bus'})
+            graph['details'][bus_id] = self.busses.get(bus_id, {})
         for bidder in bidder_ids:
             graph['nodes'].append({'id': bidder, 'group': 'bidder'})
-
         return graph
 
     def run(self):
