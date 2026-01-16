@@ -29,6 +29,13 @@ def reload_data():
     return "Data reloaded successfully!"
 
 
+
+
+@app.route("/update_bids")
+def update_bids():
+    logs = app.busses.update_bids()
+    return "Bid data updated successfully!"
+
 @app.route("/bus/<bus_id>")
 def bus_data(bus_id):
     return jsonify(app.busses.busses.get(bus_id, {}))

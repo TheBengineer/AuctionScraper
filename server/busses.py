@@ -25,6 +25,7 @@ class Busses(Thread):
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.9',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiJmZmE5MjNjMC02OTU1LTQxNTYtYmU5Ni1lNTZhZTZiMjE0YjEiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NTI5MTA0LCJleHAiOjE3Njg1MzI3MDQsImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.iVMtiXpyGvYFy9ywKfSGaeT5OawReNXZ4B8e8JcflOw',
             'Connection': 'keep-alive',
             'Content-Type': 'application/json',
             'Ocp-Apim-Subscription-Key': 'cf620d1d8f904b5797507dc5fd1fdb80',
@@ -37,12 +38,12 @@ class Busses(Thread):
             'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-            'x-api-correlation-id': '9d46e865-d398-4fea-9540-33f9a9306a45',
+            'x-api-correlation-id': 'dd0a7918-6ef5-4aec-b8ce-9121fda64adb',
             'x-api-key': 'af93060f-337e-428c-87b8-c74b5837d6cd',
-            'x-ecom-session-id': 'dd57d677-7d4c-4bef-818b-0a6bde3cd1e6',
-            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL3NlYXJjaD9rV29yZD1idXMmemlwY29kZT0zMDU3NyZtaWxlcz0yNTAmcG49MSZwcz0xMjA',
-            'x-referer': 'https://www.govdeals.com/en/search?kWord=bus&zipcode=30577&miles=250&pn=1&ps=120',
-            'x-user-id': '-1',
+            'x-ecom-session-id': '5ec17003-1fb5-4a93-9130-5b84a6dc10df',
+            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzEyMS81MDA4',
+            'x-referer': 'https://www.govdeals.com/en/asset/121/5008',
+            'x-user-id': '3739238',
             'x-user-timezone': 'America/New_York',
         }
 
@@ -125,6 +126,7 @@ class Busses(Thread):
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.9',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiJmZmE5MjNjMC02OTU1LTQxNTYtYmU5Ni1lNTZhZTZiMjE0YjEiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NTI5MTA0LCJleHAiOjE3Njg1MzI3MDQsImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.iVMtiXpyGvYFy9ywKfSGaeT5OawReNXZ4B8e8JcflOw',
             'Connection': 'keep-alive',
             'Content-Type': 'application/json',
             'Ocp-Apim-Subscription-Key': 'cf620d1d8f904b5797507dc5fd1fdb80',
@@ -137,12 +139,12 @@ class Busses(Thread):
             'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-            'x-api-correlation-id': '33c4b02b-45f2-40a4-bc32-cd014af712ec',
+            'x-api-correlation-id': 'dd0a7918-6ef5-4aec-b8ce-9121fda64adb',
             'x-api-key': 'af93060f-337e-428c-87b8-c74b5837d6cd',
-            'x-ecom-session-id': '6ae3cc40-e5ed-46df-ad27-9370bd3ff651',
-            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzEyMi81MDA4',
-            'x-referer': 'https://www.govdeals.com/en/asset/122/5008',
-            'x-user-id': '-1',
+            'x-ecom-session-id': '5ec17003-1fb5-4a93-9130-5b84a6dc10df',
+            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzEyMS81MDA4',
+            'x-referer': 'https://www.govdeals.com/en/asset/121/5008',
+            'x-user-id': '3739238',
             'x-user-timezone': 'America/New_York',
         }
 
@@ -171,8 +173,9 @@ class Busses(Thread):
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.9',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiJmMTBiYWZiYi04NjIxLTRlMjItOTI5ZC03NzY3NjQ2OTQzNGQiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NTI0Mzg1LCJleHAiOjE3Njg1Mjc5ODUsImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.uxZheWXDr5feNvxDYt3N2O2BERMI34egg6b9rmWOe84',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiJmZmE5MjNjMC02OTU1LTQxNTYtYmU5Ni1lNTZhZTZiMjE0YjEiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NTI5MTA0LCJleHAiOjE3Njg1MzI3MDQsImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.iVMtiXpyGvYFy9ywKfSGaeT5OawReNXZ4B8e8JcflOw',
             'Connection': 'keep-alive',
+            'Content-Type': 'application/json',
             'Ocp-Apim-Subscription-Key': 'cf620d1d8f904b5797507dc5fd1fdb80',
             'Origin': 'https://www.govdeals.com',
             'Referer': 'https://www.govdeals.com/',
@@ -183,16 +186,23 @@ class Busses(Thread):
             'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-            'x-api-correlation-id': '243811f6-14f8-4c91-adde-2301a474ef9c',
+            'x-api-correlation-id': 'dd0a7918-6ef5-4aec-b8ce-9121fda64adb',
             'x-api-key': 'af93060f-337e-428c-87b8-c74b5837d6cd',
-            'x-ecom-session-id': '289e934a-f436-45f1-8ffd-6c0ba1463f06',
-            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzE2NTcvMTAyMzI',
-            'x-referer': 'https://www.govdeals.com/en/asset/1657/10232',
+            'x-ecom-session-id': '5ec17003-1fb5-4a93-9130-5b84a6dc10df',
+            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzEyMS81MDA4',
+            'x-referer': 'https://www.govdeals.com/en/asset/121/5008',
             'x-user-id': '3739238',
             'x-user-timezone': 'America/New_York',
         }
 
-        response = requests.get(f'https://maestro.lqdt1.com/bids/bidbox/GD/{asset_id}/{account_id}/1', headers=headers)
+        json_data = {
+            'auctionId': 1,
+            'page': 1,
+            'displayRows': 50,
+        }
+
+        response = requests.post(f'https://maestro.lqdt1.com/assets/{asset_id}/{account_id}/bids/search', headers=headers,
+                                 json=json_data)
         data = response.json()
         return data
 
@@ -257,15 +267,28 @@ class Busses(Thread):
             last_bid_update = bus.get('lastBidUpdate', '1970-01-01T00:00:00Z')
             last_bid_update_dt = datetime.strptime(last_bid_update, '%Y-%m-%dT%H:%M:%SZ')
             time_since_last_update = datetime.utcnow() - last_bid_update_dt
-            if time_since_last_update.total_seconds() < 300:
+            if time_since_last_update.total_seconds() < 3:
                 continue
             if bus.get('assetLongDesc', False) and not bus.get('hidden', False):
                 bus_bids = self.get_bus_bids(bus_id)
-                for key, value in bus_bids.items():
-                    if value is not None:
-                        bus[key] = value
+                existing_bids = {bid.get("price"):bid for bid in self.bids.get(bus_id, [])}
+                for new_bid in bus_bids:
+                    new_bid_price = new_bid.get('bidAmount', 0.0)
+                    if bus_id not in self.bids:
+                        self.bids[bus_id] = []
+                        self.new_bid_data = True
+                    if new_bid_price not in existing_bids:
+                        bid_entry = {
+                            'timestamp': new_bid.get('bidDateTime', datetime.utcnow()),
+                            'buyerId': new_bid.get('buyerId'),
+                            'price': new_bid_price,
+                        }
+                        self.bids[bus_id].append(bid_entry)
+                        self.new_bid_data = True
+                existing_bids = {bid.get("price"):bid for bid in self.bids.get(bus_id, [])}
+                highest_bid = max(existing_bids.keys())
                 bus['lastBidUpdate'] = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-                bus['currentBid'] = bus.get('assetBidPrice', 0.0)
+                bus['currentBid'] = highest_bid
                 self.new_data = True
                 self.update_bid_data(bus_id, bus)
         self.save_data()

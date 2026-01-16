@@ -7,6 +7,11 @@ function scrape_new() {
     return null;
 }
 
+function update_bids() {
+    fetch('/update_bids')
+    return null;
+}
+
 
 function hide_bus(bus_id) {
     fetch(`/hide/${bus_id}`)
