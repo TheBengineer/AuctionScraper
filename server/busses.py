@@ -8,8 +8,8 @@ import json
 
 from tqdm import tqdm
 
-
 BUS_POLL_INTERVAL = 3600  # seconds
+
 
 class Busses(Thread):
     def __init__(self, stop_event=None):
@@ -22,12 +22,14 @@ class Busses(Thread):
         self.load_existing_data()
         self.stop_event = stop_event
         self.last_update = datetime.utcnow()
+        self.session = requests.Session()
+        self.headers = {}
 
-    def get_new_busses(self):
+    def setup_session(self):
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.9',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiJmZmE5MjNjMC02OTU1LTQxNTYtYmU5Ni1lNTZhZTZiMjE0YjEiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NTI5MTA0LCJleHAiOjE3Njg1MzI3MDQsImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.iVMtiXpyGvYFy9ywKfSGaeT5OawReNXZ4B8e8JcflOw',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiI4YzdmMDk5OC01YzQxLTQ1M2EtOTJmMC0yNjY2ZDhiMDIxM2UiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NTkzMzE4LCJleHAiOjE3Njg1OTY5MTgsImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.wVWlX1H87so0bBAz4mb_c0W1yS04YoGdzzqQS7BobKc',
             'Connection': 'keep-alive',
             'Content-Type': 'application/json',
             'Ocp-Apim-Subscription-Key': 'cf620d1d8f904b5797507dc5fd1fdb80',
@@ -40,14 +42,19 @@ class Busses(Thread):
             'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-            'x-api-correlation-id': 'dd0a7918-6ef5-4aec-b8ce-9121fda64adb',
+            'x-api-correlation-id': 'ed1d50c3-bea5-4d14-997c-603cb92de3f2',
             'x-api-key': 'af93060f-337e-428c-87b8-c74b5837d6cd',
-            'x-ecom-session-id': '5ec17003-1fb5-4a93-9130-5b84a6dc10df',
-            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzEyMS81MDA4',
-            'x-referer': 'https://www.govdeals.com/en/asset/121/5008',
             'x-user-id': '3739238',
+            'x-referer': 'https://www.govdeals.com/en/search?kWord=bus',
             'x-user-timezone': 'America/New_York',
         }
+        self.headers.update(headers)
+        self.session.headers.update(headers)
+        self.session.get('https://www.govdeals.com/')
+
+    def get_new_busses(self):
+        for cookie in self.session.cookies:
+            self.headers[cookie.name] = cookie.value
 
         json_data = {
             'categoryIds': '6',
@@ -62,7 +69,6 @@ class Busses(Thread):
             'displayRows': 500,
             'sortField': 'bestfit',
             'sortOrder': 'desc',
-            'sessionId': 'bcf4bb67-90f0-4ee7-868d-ed5ce0150989',
             'requestType': 'search',
             'responseStyle': 'productsOnly',
             'facets': [
@@ -90,7 +96,7 @@ class Busses(Thread):
             'proximityWithinDistance': '700',
         }
 
-        response = requests.post('https://maestro.lqdt1.com/search/list', headers=headers, json=json_data)
+        response = self.session.post('https://maestro.lqdt1.com/search/list', headers=self.headers, json=json_data)
         data = response.json()
         busses = {}
         for bus in data.get('assetSearchResults', []):
@@ -123,40 +129,15 @@ class Busses(Thread):
 
     def get_bus_details(self, bus_id):
         account_id, asset_id = self.bus_id_to_asset_id(bus_id)
-        import requests
-
-        headers = {
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiJmZmE5MjNjMC02OTU1LTQxNTYtYmU5Ni1lNTZhZTZiMjE0YjEiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NTI5MTA0LCJleHAiOjE3Njg1MzI3MDQsImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.iVMtiXpyGvYFy9ywKfSGaeT5OawReNXZ4B8e8JcflOw',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key': 'cf620d1d8f904b5797507dc5fd1fdb80',
-            'Origin': 'https://www.govdeals.com',
-            'Referer': 'https://www.govdeals.com/',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'cross-site',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36',
-            'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'x-api-correlation-id': 'dd0a7918-6ef5-4aec-b8ce-9121fda64adb',
-            'x-api-key': 'af93060f-337e-428c-87b8-c74b5837d6cd',
-            'x-ecom-session-id': '5ec17003-1fb5-4a93-9130-5b84a6dc10df',
-            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzEyMS81MDA4',
-            'x-referer': 'https://www.govdeals.com/en/asset/121/5008',
-            'x-user-id': '3739238',
-            'x-user-timezone': 'America/New_York',
-        }
 
         json_data = {
             'businessId': 'GD',
             'siteId': 1,
         }
 
-        response = requests.post(f'https://maestro.lqdt1.com/assets/{asset_id}/{account_id}/false', headers=headers,
-                                 json=json_data)
+        response = self.session.post(f'https://maestro.lqdt1.com/assets/{asset_id}/{account_id}/false',
+                                     headers=self.headers,
+                                     json=json_data)
         data = response.json()
         new_asset_id = data.get('assetId')
         new_account_id = data.get('accountId')
@@ -172,39 +153,15 @@ class Busses(Thread):
         account_id, asset_id = self.bus_id_to_asset_id(bus_id)
         import requests
 
-        headers = {
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiJmZmE5MjNjMC02OTU1LTQxNTYtYmU5Ni1lNTZhZTZiMjE0YjEiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NTI5MTA0LCJleHAiOjE3Njg1MzI3MDQsImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.iVMtiXpyGvYFy9ywKfSGaeT5OawReNXZ4B8e8JcflOw',
-            'Connection': 'keep-alive',
-            'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key': 'cf620d1d8f904b5797507dc5fd1fdb80',
-            'Origin': 'https://www.govdeals.com',
-            'Referer': 'https://www.govdeals.com/',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'cross-site',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36',
-            'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'x-api-correlation-id': 'dd0a7918-6ef5-4aec-b8ce-9121fda64adb',
-            'x-api-key': 'af93060f-337e-428c-87b8-c74b5837d6cd',
-            'x-ecom-session-id': '5ec17003-1fb5-4a93-9130-5b84a6dc10df',
-            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzEyMS81MDA4',
-            'x-referer': 'https://www.govdeals.com/en/asset/121/5008',
-            'x-user-id': '3739238',
-            'x-user-timezone': 'America/New_York',
-        }
-
         json_data = {
             'auctionId': 1,
             'page': 1,
             'displayRows': 50,
         }
 
-        response = requests.post(f'https://maestro.lqdt1.com/assets/{asset_id}/{account_id}/bids/search', headers=headers,
-                                 json=json_data)
+        response = self.session.post(f'https://maestro.lqdt1.com/assets/{asset_id}/{account_id}/bids/search',
+                                     headers=self.headers,
+                                     json=json_data)
         data = response.json()
         return data
 
@@ -273,7 +230,7 @@ class Busses(Thread):
                 continue
             if bus.get('assetLongDesc', False) and not bus.get('hidden', False):
                 bus_bids = self.get_bus_bids(bus_id)
-                existing_bids = {bid.get("price"):bid for bid in self.bids.get(bus_id, [])}
+                existing_bids = {bid.get("price"): bid for bid in self.bids.get(bus_id, [])}
                 for new_bid in bus_bids:
                     new_bid_price = new_bid.get('bidAmount', 0.0)
                     if bus_id not in self.bids:
@@ -287,7 +244,7 @@ class Busses(Thread):
                         }
                         self.bids[bus_id].append(bid_entry)
                         self.new_bid_data = True
-                existing_bids = {bid.get("price"):bid for bid in self.bids.get(bus_id, [])}
+                existing_bids = {bid.get("price"): bid for bid in self.bids.get(bus_id, [])}
                 highest_bid = max(existing_bids.keys())
                 bus['lastBidUpdate'] = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
                 bus['currentBid'] = highest_bid
@@ -323,6 +280,7 @@ class Busses(Thread):
 
     def run(self):
         print("Busses thread started...")
+        self.setup_session()
         while not self.stop_event.is_set():
             now = datetime.utcnow()
             if (now - self.last_update).total_seconds() > BUS_POLL_INTERVAL:
