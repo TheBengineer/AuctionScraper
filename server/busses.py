@@ -281,6 +281,32 @@ class Busses(Thread):
                 bus['isSoldAuction'] = True
             time_left_formatted = str(time_left)
             bus['timeRemaining'] = time_left_formatted
+        modified_desc = bus.get('assetLongDesc', '').lower() + bus.get('note', '').lower()
+        tag_map = {
+            "7.6":"DT466e",
+            "466": "DT466e",
+            "7.2":"CAT 3126",
+            "3126": "CAT 3126",
+            "5.9":"5.9 Cummins",
+            "6.7":"Cummins",
+            "cummins": "Cummins",
+            "6.4":"V8",
+            "v8":"V8",
+            "10.3": "C10",
+            "c10": "C10",
+            "7.3": "T444e",
+            "7.4": "T444e",
+            "444": "T444e",
+            "545": "AT545",
+            "mercedes": "Mercedes",
+            "benz": "Mercedes",
+        }
+        if "tags" not in bus:
+            bus['tags'] = []
+        for tag_key in tag_map:
+            if tag_key in modified_desc:
+                bus['tags'].append(tag_map[tag_key])
+        bus['tags'] = list(set(bus['tags']))
         if not bus.get('latitude', True):
             del bus['latitude']
             self.new_data = True

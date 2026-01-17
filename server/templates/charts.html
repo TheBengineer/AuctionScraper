@@ -8,26 +8,32 @@
 <div>
     <canvas id="busPrice"></canvas>
     <canvas id="Histogram"></canvas>
+    <canvas id="enginePie"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script>
     const priceCtx = document.getElementById('busPrice');
-    const histCtx = document.getElementById('busPrice').getContext('2d');
+    const histCtx = document.getElementById('Histogram').getContext('2d');
+    const pieCtx = document.getElementById('enginePie').getContext('2d');
 
+    const pieData = {
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                backgroundColor: 'rgba(0,42,255,0.14)',
+                label: 'Engine Distribution'
+            }]
+        }
+    }
 
-    let chartData = {
-        datasets: [{
-            label: 'Bus Prices',
-            data: [],
-            backgroundColor: 'rgba(0,42,255,0.14)'
-        }]
-    };
-
-    const config = {
+    const priceChartConfig = {
         type: 'bubble',
-        data: chartData,
+        data: {
+            datasets: []
+        },
         options: {
             responsive: true,
             plugins: {
@@ -60,57 +66,98 @@
     };
     fetch("/busses.json")
         .then(res => res.json())
-        .then(data => {
-            const toGraph = []
+        .then(busData => {
+            const priceDatamap = {}
+            const priceDatasets = []
             const prices = []
-            console.log("data", data)
+            const engines = {}
 
-            for (const busId in data) {
-                if (data[busId].hidden) continue
-                const endDate = new Date(data[busId].assetAuctionEndDateUtc)
-                toGraph.push({x: endDate, y: data[busId].currentBid, r: 6})
-                prices.push(data[busId].currentBid)
-            }
 
-            config.data.datasets[0].data = toGraph;
-            console.log(prices);
-            const ChartObj = new Chart(priceCtx, config);
-            var dataValues = [12, 19, 3, 5];
-            var dataLabels = [0, 1, 2, 3, 4];
-            var myChart = new Chart(histCtx, {
-                type: 'bar',
-                data: {
-                    labels: dataLabels,
-                    datasets: [{
-                        label: 'Group A',
-                        data: dataValues,
-                        backgroundColor: 'rgba(255, 99, 132, 1)',
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: [{
-                            display: false,
-                            barPercentage: 1.3,
-                            ticks: {
-                                max: 3,
-                            }
-                        }, {
-                            display: true,
-                            ticks: {
-                                autoSkip: false,
-                                max: 4,
-                            }
-                        }],
-                        y: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
+            for (const busId in busData) {
+                if (busData[busId].hidden) continue
+                const endDate = new Date(busData[busId].assetAuctionEndDateUtc)
+                const engine = busData[busId].tags[0]
+                const currentBid = busData[busId].currentBid
+                if (!(engine in priceDatamap)) {
+                    priceDatamap[engine] = {
+                        label: engine,
+                        data: [],
                     }
                 }
-            });
 
+                priceDatamap[engine].data.push({x: endDate, y: currentBid, r: 6})
+                prices.push([currentBid, engine, busData[busId].assetAuctionEndDateUtc])
+
+                if (engine in engines) {
+                    engines[engine] += 1
+                } else {
+                    engines[engine] = 1
+                }
+            }
+            for (const engine in priceDatamap) {
+                priceDatasets.push(priceDatamap[engine])
+            }
+            console.log(priceDatasets)
+
+            for (const engine in engines) {
+                pieData.data.datasets[0].data.push(engines[engine])
+                pieData.data.labels.push(engine)
+            }
+
+            priceChartConfig.data.datasets = priceDatasets;
+            console.log(prices);
+            const priceChart = new Chart(priceCtx, priceChartConfig);
+
+            // const histChart = new Chart(histCtx, {
+            //     type: 'bar',
+            //     data: {
+            //         labels: dataLabels,
+            //         datasets: [{
+            //             label: 'Group A',
+            //             data: dataValues,
+            //             backgroundColor: 'rgba(255, 99, 132, 1)',
+            //         }]
+            //     },
+            //     options: {
+            //         scales: {
+            //             x: [{
+            //                 display: false,
+            //                 barPercentage: 1.3,
+            //                 ticks: {
+            //                     max: 3,
+            //                 }
+            //             }, {
+            //                 display: true,
+            //                 ticks: {
+            //                     autoSkip: false,
+            //                     max: 4,
+            //                 }
+            //             }],
+            //             y: [{
+            //                 ticks: {
+            //                     beginAtZero: true
+            //                 }
+            //             }]
+            //         }
+            //     }
+            // });
+            console.log(pieData);
+            const enginePieChart = new Chart(pieCtx, {
+                type: 'pie',
+                data: pieData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Engines Breakdown'
+                        }
+                    }
+                },
+            });
         })
 
 
