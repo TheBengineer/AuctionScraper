@@ -259,6 +259,15 @@ class Busses(Thread):
         try:
             if int(bus.get('modelYear', 0)) > 2010:
                 bus["hidden"] = True
+                self.new_data = True
+            if bus.get('makebrand') == "NABI":
+                bus["hidden"] = True
+                self.new_data = True
+            banned = ['transit', "van", '84 passenger', 'coach', 'tc2000']
+            for b in banned:
+                if b in bus.get('assetShortDescription').lower():
+                    bus["hidden"] = True
+                    self.new_data = True
         except Exception:
             pass
         if not bus.get('assetLongDesc', False) and not bus.get('hidden', False):
