@@ -7,11 +7,10 @@
         </a>
         <span>Bids: {{busses[bus_id].get('bidCount', '0')}}</span>
     </div>
-    <div>isSoldAuction
-        {% if busses[bus_id].get('isSoldAuction', False) %}
+    <div>
         <span>{{busses[bus_id].get('timeRemaining', '')}}</span>
-        {% else %}
-        <span class="sold">SOLD</span>
+        {% if busses[bus_id].get('isSoldAuction', False) %}
+            <span class="sold">SOLD</span>
         {% endif %}
     </div>
     <div>
