@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Charts</title>
+</head>
+<body>
+<div>
+    <canvas id="busPrice"></canvas>
+    <canvas id="Histogram"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script>
+    const priceCtx = document.getElementById('busPrice');
+    const histCtx = document.getElementById('busPrice').getContext('2d');
+
+
+    let chartData = {
+        datasets: [{
+            label: 'Bus Prices',
+            data: [],
+            backgroundColor: 'rgba(0,42,255,0.14)'
+        }]
+    };
+
+    const config = {
+        type: 'bubble',
+        data: chartData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'School Bus Pricing'
+                }
+            },
+            scales: {
+                x: {
+                    type: 'time', // Set axis type to time
+                    time: {
+                        unit: 'day', // Display ticks by day, week, month, etc.
+                        tooltipFormat: 'MMM dd, yyyy', // Format for tooltips
+                        displayFormats: { // Customize tick labels
+                            day: 'MMM d',
+                            month: 'MMM yyyy'
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                }
+            },  // end scales
+        },
+    };
+    fetch("/busses.json")
+        .then(res => res.json())
+        .then(data => {
+            const toGraph = []
+            const prices = []
+            console.log("data", data)
+
+            for (const busId in data) {
+                if (data[busId].hidden) continue
+                const endDate = new Date(data[busId].assetAuctionEndDateUtc)
+                toGraph.push({x: endDate, y: data[busId].currentBid, r: 6})
+                prices.push(data[busId].currentBid)
+            }
+
+            config.data.datasets[0].data = toGraph;
+            console.log(prices);
+            const ChartObj = new Chart(priceCtx, config);
+            var dataValues = [12, 19, 3, 5];
+            var dataLabels = [0, 1, 2, 3, 4];
+            var myChart = new Chart(histCtx, {
+                type: 'bar',
+                data: {
+                    labels: dataLabels,
+                    datasets: [{
+                        label: 'Group A',
+                        data: dataValues,
+                        backgroundColor: 'rgba(255, 99, 132, 1)',
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: [{
+                            display: false,
+                            barPercentage: 1.3,
+                            ticks: {
+                                max: 3,
+                            }
+                        }, {
+                            display: true,
+                            ticks: {
+                                autoSkip: false,
+                                max: 4,
+                            }
+                        }],
+                        y: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+        })
+
+
+</script>
+</body>
+</html>

@@ -16,6 +16,11 @@ def dashboard():
     return render_template("dashboard.html", busses=app.busses.busses, show_hidden=False)
 
 
+@app.route("/charts")
+def charts():
+    return render_template("charts.html", busses=app.busses.busses)
+
+
 @app.route("/hidden")
 def dashboard_hidden():
     app.busses.update()
@@ -49,6 +54,9 @@ def update_bids():
 def bus_data(bus_id):
     return jsonify(app.busses.busses.get(bus_id, {}))
 
+@app.route("/busses.json")
+def all_bus_data():
+    return jsonify(app.busses.busses)
 
 @app.route("/hide/<bus_id>")
 def hide_bus(bus_id):
@@ -62,7 +70,7 @@ def bus_details(bus_id):
     return jsonify(details)
 
 
-@app.route("/bids")
+@app.route("/bids.json")
 def show_bids():
     return jsonify(app.busses.bids)
 
@@ -85,7 +93,6 @@ def notes(bus_id):
     return jsonify(app.busses.busses.get(bus_id, {}).get("note", ""))
 
 
-
 @app.route("/bidders/")
 def bidders():
     return jsonify(app.busses.bidders())
@@ -94,8 +101,6 @@ def bidders():
 @app.route("/bids/")
 def bids():
     return render_template("bids.html")
-
-
 
 
 @atexit.register
