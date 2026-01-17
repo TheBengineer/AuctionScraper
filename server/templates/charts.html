@@ -19,14 +19,11 @@
     const pieCtx = document.getElementById('enginePie').getContext('2d');
 
     const pieData = {
-        data: {
-            labels: [],
-            datasets: [{
-                data: [],
-                backgroundColor: 'rgba(0,42,255,0.14)',
-                label: 'Engine Distribution'
-            }]
-        }
+        labels: [],
+        datasets: [{
+            data: [],
+            label: 'Engine Distribution'
+        }]
     }
 
     const priceChartConfig = {
@@ -97,16 +94,15 @@
             for (const engine in priceDatamap) {
                 priceDatasets.push(priceDatamap[engine])
             }
-            console.log(priceDatasets)
 
             for (const engine in engines) {
-                pieData.data.datasets[0].data.push(engines[engine])
-                pieData.data.labels.push(engine)
+                pieData.datasets[0].data.push(engines[engine])
+                pieData.labels.push(engine)
             }
 
             priceChartConfig.data.datasets = priceDatasets;
             console.log(prices);
-            const priceChart = new Chart(priceCtx, priceChartConfig);
+            new Chart(priceCtx, priceChartConfig); // Price Bubble
 
             // const histChart = new Chart(histCtx, {
             //     type: 'bar',
@@ -142,7 +138,7 @@
             //     }
             // });
             console.log(pieData);
-            const enginePieChart = new Chart(pieCtx, {
+            new Chart(pieCtx, { // Engine Pie chart
                 type: 'pie',
                 data: pieData,
                 options: {
