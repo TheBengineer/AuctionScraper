@@ -33,6 +33,7 @@
     padding: 5px;
     box-sizing: border-box;
 }
+
 .bus .photo-row {
     overflow-x: scroll;
     display: flex;
@@ -48,11 +49,16 @@
 .bus .description {
     padding: 5px;
 }
+
 .note textarea {
     width: 98%;
     height: 100px;
 }
 
-.note .unsaved{
+.note .unsaved {
     background-color: rgba(255, 0, 0, 0.05);
+}
+
+.sold {
+    color: red;
 }
