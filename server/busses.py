@@ -29,7 +29,6 @@ class Busses(Thread):
         headers = {
             'Accept': 'application/json, text/plain, */*',
             'Accept-Language': 'en-US,en;q=0.9',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGViZW5naW5lZXIiLCJqdGkiOiI0NmZkMDFmYi1hNGY1LTQ4MDgtODI5NS1lMWIwNmUyZjEzNDUiLCJ1c2VyX2lkIjoiMzczOTIzOCIsInVzZXJfZm5hbWUiOiJCZW4iLCJ1c2VyX2xuYW1lIjoiaG9sbGVyYW4iLCJ1c2VyX2VtYWlsIjoiYmVuZ2luZWVyaW5nZWxtQGdtYWlsLmNvbSIsInVzZXJfcGJfbGV2ZWwiOiIxIiwidXNlcl9wYl9sZXZlbF9kdCI6IjAxLzExLzIwMjYgMDA6MDA6MDAuMDAwIiwiZW1fdG9rZW4iOiJlZTUzMTU1NDBkMGIxNGZkZWNmOGJmNzcwZTFlMjQzOTE5YmMyZWZiYjRkODI1ODQ2NiEiLCJpcF9hZGRyZXNzIjoiOjpmZmZmOjE2OS4yNTQuMTI5LjEiLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzE0My4wLjAuMCBTYWZhcmkvNTM3LjM2IiwibmJmIjoxNzY4NjAxNzE5LCJleHAiOjE3Njg2MDUzMTksImlzcyI6IldlYkFwaS5BdXRoZW50aWNhdGlvbiIsImF1ZCI6IkVjb20ifQ.qOxEikws-22sdmmt2qEo6cyL1HHo4OaGbGz6QBEedmo',
             'Connection': 'keep-alive',
             'Content-Type': 'application/json',
             'Ocp-Apim-Subscription-Key': 'cf620d1d8f904b5797507dc5fd1fdb80',
@@ -42,12 +41,12 @@ class Busses(Thread):
             'sec-ch-ua': '"Google Chrome";v="143", "Chromium";v="143", "Not A(Brand";v="24"',
             'sec-ch-ua-mobile': '?0',
             'sec-ch-ua-platform': '"Windows"',
-            'x-api-correlation-id': '7573d45e-1e1b-44c8-a5ac-7ebe5f6097eb',
+            'x-api-correlation-id': '1c810a61-9ac9-474c-860c-c014e920f96c',
             'x-api-key': 'af93060f-337e-428c-87b8-c74b5837d6cd',
-            'x-ecom-session-id': '1038986a-fe51-45d3-83ea-57b26761c9e7',
-            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzExMjYvMTk3NzA',
-            'x-referer': 'https://www.govdeals.com/en/asset/1126/19770',
-            'x-user-id': '3739238',
+            'x-ecom-session-id': '52ca938e-e76c-47f9-8f8a-feb36d775740',
+            'x-page-unique-id': 'aHR0cHM6Ly93d3cuZ292ZGVhbHMuY29tL2VuL2Fzc2V0LzE1OTAvNDg0NQ=',
+            'x-referer': 'https://www.govdeals.com/en/asset/1590/4845',
+            'x-user-id': '-1',
             'x-user-timezone': 'America/New_York',
         }
         self.headers.update(headers)
