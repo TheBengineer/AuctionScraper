@@ -8,7 +8,9 @@
 <div>
     <canvas id="busPrice"></canvas>
     <canvas id="Histogram"></canvas>
-    <canvas id="enginePie"></canvas>
+    <div style="height:300px">
+        <canvas id="enginePie"></canvas>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -143,6 +145,7 @@
                 data: pieData,
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             position: 'top',
