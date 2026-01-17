@@ -66,7 +66,7 @@ class Busses(Thread):
             'page': 1,
             'displayRows': 500,
             'sortField': 'bestfit',
-            'sortOrder': 'asc',
+            'sortOrder': 'desc',
             'requestType': 'search',
             'responseStyle': 'productsOnly',
             'facets': [
@@ -83,19 +83,15 @@ class Busses(Thread):
                 'warehouseId',
                 'region',
                 'currencyTypeCode',
+                'countryDesc',
                 'tierId',
             ],
             'facetsFilter': [],
             'timeType': '',
             'sellerTypeId': None,
             'accountIds': [],
-            'isSimpleTimeSearch': True,
-            'simpleTimeSearchType': 'sold',
-            'simpleTimeWithIn': 0,
-            'toDate': None,
-            'fromDate': None,
-            'timeUnitValue': '',
-            'isVehicleSearch': False,
+            'zipcode': '30577',
+            'proximityWithinDistance': '700',
         }
 
         response = self.session.post('https://maestro.lqdt1.com/search/list', headers=self.headers, json=json_data)
