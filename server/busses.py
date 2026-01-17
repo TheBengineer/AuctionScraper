@@ -256,6 +256,11 @@ class Busses(Thread):
 
     def update_bus(self, bus_id):
         bus = self.busses[bus_id]
+        try:
+            if int(bus.get('modelYear', 0)) > 2010:
+                bus["hidden"] = True
+        except Exception:
+            pass
         if not bus.get('assetLongDesc', False) and not bus.get('hidden', False):
             print(f"Updating bus ID: {bus_id}")
             bus['assetLongDesc'] = "loading"
