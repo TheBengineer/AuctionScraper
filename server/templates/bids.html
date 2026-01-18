@@ -28,7 +28,41 @@
                     const size = 20;
                     const img = imgs[id]
                     ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
-
+                    if (!data.details[id].isSoldAuction) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = "#FF000077";
+                        ctx.lineWidth = 5;
+                        ctx.arc(x, y, size, 0, 2 * Math.PI);
+                        ctx.stroke();
+                    }
+                    if (data.details[id].tags[0] === "DT466e") {
+                        ctx.beginPath();
+                        ctx.strokeStyle = "rgba(0,90,191,0.47)";
+                        ctx.lineWidth = 5;
+                        ctx.arc(x, y, size*1.3, 0, 2 * Math.PI);
+                        ctx.stroke();
+                    }
+                    if (data.details[id].tags[0] === "CAT 3126") {
+                        ctx.beginPath();
+                        ctx.strokeStyle = "rgba(243,172,0,0.66)";
+                        ctx.lineWidth = 5;
+                        ctx.arc(x, y, size*1.3, 0, 2 * Math.PI);
+                        ctx.stroke();
+                    }
+                    if (data.details[id].tags[0] === "Cummins") {
+                        ctx.beginPath();
+                        ctx.strokeStyle = "rgba(219,0,243,0.66)";
+                        ctx.lineWidth = 5;
+                        ctx.arc(x, y, size*1.3, 0, 2 * Math.PI);
+                        ctx.stroke();
+                    }
+                    if (data.details[id].tags[0] === "V8") {
+                        ctx.beginPath();
+                        ctx.strokeStyle = "rgba(81,243,0,0.66)";
+                        ctx.lineWidth = 5;
+                        ctx.arc(x, y, size*1.3, 0, 2 * Math.PI);
+                        ctx.stroke();
+                    }
                 } else {
                     const size = 4;
                     ctx.fontSize = 4;
