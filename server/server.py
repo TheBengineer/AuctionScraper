@@ -1,8 +1,7 @@
 import atexit
 import threading
 
-from flask import Flask, render_template, jsonify
-from flask import request
+from flask import Flask, render_template, jsonify, request
 
 from busses import Busses
 

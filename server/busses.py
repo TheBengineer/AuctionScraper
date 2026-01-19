@@ -1,6 +1,6 @@
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from threading import Thread
 
 import requests
@@ -229,6 +229,8 @@ class Busses(Thread):
             except Exception:
                 pass
             if time_since_last_update.total_seconds() < BUS_POLL_INTERVAL:
+                continue
+            if bus.get("assetAuctionEndDateUtc") and datetime.strptime(bus.get("assetAuctionEndDateUtc"),'%Y-%m-%dT%H:%M:%SZ')  < (datetime.utcnow() + timedelta(hours=24)):
                 continue
             if bus.get('assetLongDesc', False) and not bus.get('hidden', False):
                 bus_bids = self.get_bus_bids(bus_id)
