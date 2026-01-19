@@ -169,30 +169,42 @@
                 const states = ChartGeo.topojson.feature(us, us.objects.states).features;
 
                 const geoData = []
+                const geoEngineSeries = {}
+
+
                 for (const busId in busData) {
                     if (busData[busId].hidden) continue
-
-                    geoData.push({
-                        name: busId,
-                        description: busData[busId].assetShortDesc,
-                        value: busData[busId].currentBid / 1000.0,
-                        latitude: busData[busId].latitude,
-                        longitude: busData[busId].longitude,
+                    const engine = busData[busId].tags[0]
+                    const currentBid = busData[busId].currentBid
+                    const lat = busData[busId].latitude
+                    const lng = busData[busId].longitude
+                    if (!lat || !lng || !currentBid || !busData[busId].assetShortDesc || !engine) continue
+                    if (!(engine in geoEngineSeries)) {
+                        geoEngineSeries[engine] = {
+                            outline: states,
+                            label: engine,
+                            showOutline: true,
+                            data: [],
+                        }
+                    }
+                    geoEngineSeries[engine].data.push({
+                        latitude: lat,
+                        longitude: lng,
+                        value: currentBid / 1000.0,
+                        description: busData[busId].assetShortDesc
                     })
                 }
-
-                console.log(busData);
+                for (const engine in geoEngineSeries) {
+                    if (!engine || !geoEngineSeries[engine].label) continue
+                    geoData.push(geoEngineSeries[engine])
+                }
+                console.log(geoData);
 
                 new Chart(geoCtx, {
                     type: 'bubbleMap',
                     data: {
                         labels: [],
-                        datasets: [{
-                            outline: states,
-                            showOutline: true,
-                            backgroundColor: 'rgba(21,21,179,0.33)',
-                            data: geoData,
-                        }]
+                        datasets: [geoData]
                     },
                     options: {
                         plugins: {
