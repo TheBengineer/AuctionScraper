@@ -11,14 +11,20 @@
     <div style="height:300px">
         <canvas id="enginePie"></canvas>
     </div>
+    <canvas id="geoChart"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src="https://unpkg.com/chartjs-chart-geo@4"></script>
+<h2>Bids By Area</h2>
+<script src="https://unpkg.com/chartjs-plugin-datalabels"></script>
+
 <script>
     const priceCtx = document.getElementById('busPrice');
     const histCtx = document.getElementById('Histogram').getContext('2d');
     const pieCtx = document.getElementById('enginePie').getContext('2d');
+    const geoCtx = document.getElementById('geoChart').getContext('2d');
 
     const pieData = {
         labels: [],
@@ -139,7 +145,6 @@
             //         }
             //     }
             // });
-            console.log(pieData);
             new Chart(pieCtx, { // Engine Pie chart
                 type: 'pie',
                 data: pieData,
@@ -156,6 +161,63 @@
                         }
                     }
                 },
+            });
+
+            fetch('https://unpkg.com/us-atlas/states-10m.json')
+                .then((r) => r.json()).then(us => {
+
+                const states = ChartGeo.topojson.feature(us, us.objects.states).features;
+
+                const geoData = []
+                for (const busId in busData) {
+                    if (busData[busId].hidden) continue
+
+                    geoData.push({
+                        name: busId,
+                        description: busData[busId].assetShortDesc,
+                        value: busData[busId].currentBid / 1000.0,
+                        latitude: busData[busId].latitude,
+                        longitude: busData[busId].longitude,
+                    })
+                }
+
+                console.log(busData);
+
+                new Chart(geoCtx, {
+                    type: 'bubbleMap',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            outline: states,
+                            showOutline: true,
+                            backgroundColor: 'rgba(21,21,179,0.33)',
+                            data: geoData,
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            datalabels: {
+                                align: 'top',
+                                formatter: (v) => {
+                                    return v.description;
+                                }
+                            }
+                        },
+                        scales: {
+                            projection: {
+                                axis: 'x',
+                                projection: 'albersUsa',
+                            },
+                            size: {
+                                axis: 'x',
+                                size: [1, 20],
+                            },
+                        }
+                    }
+                });
             });
         })
 
