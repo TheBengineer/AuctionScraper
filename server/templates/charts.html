@@ -11,13 +11,13 @@
     <div style="height:300px">
         <canvas id="enginePie"></canvas>
     </div>
+    <h2>Bids By Area</h2>
     <canvas id="geoChart"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <script src="https://unpkg.com/chartjs-chart-geo@4"></script>
-<h2>Bids By Area</h2>
 <script src="https://unpkg.com/chartjs-plugin-datalabels"></script>
 
 <script>
@@ -81,6 +81,9 @@
             const histBinLabels = [...Array(16).keys().map((id) => {
                 return "" + (id * 500);
             })]
+            const engineTotals = {}
+            const engineCounts = {}
+            const engineAverages = {}
 
 
             for (const busId in busData) {
@@ -101,6 +104,15 @@
                         data: [...Array(16).fill(4)],
                     }
                 }
+                if (!(engine in engineTotals)) {
+                    engineTotals[engine] = 0
+                }
+                if (!(engine in engineCounts)) {
+                    engineCounts[engine] = 0
+                }
+                engineTotals[engine] += currentBid
+                engineCounts[engine] += 1
+
                 const histBin = Math.min(Math.floor(currentBid / 500), 15)
                 histogramMap[engine].data[histBin] += 1
 
@@ -118,6 +130,8 @@
 
 
             for (const engine in engines) {
+                engineAverages[engine] = engineTotals[engine] / engineCounts[engine]
+
                 priceDatasets.push(priceDatamap[engine])
 
                 histogram.push(histogramMap[engine])
@@ -130,13 +144,14 @@
             priceChartConfig.data.datasets = priceDatasets;
             console.log(prices);
             console.log(histogram);
+            console.log(engineAverages);
             new Chart(priceCtx, priceChartConfig); // Price Bubble
 
             new Chart(histCtx, {
                 type: 'line',
                 data: {
                     labels: histBinLabels,
-                    datasets: [histogramMap["CAT 3126"], histogramMap["Cummins"], histogramMap["V8"], histogramMap["DT466e"], histogramMap["T444e"], histogramMap["5.9 Cummins"], histogramMap["C10"], histogramMap["AT545"],]
+                    datasets: [histogramMap["CAT 3126"], histogramMap["Cummins"], histogramMap["V8"], histogramMap["DT466e"], histogramMap["5.9 Cummins"], histogramMap["C10"], histogramMap["AT545"], histogramMap["T444e"],]
                 },
             });
             new Chart(pieCtx, { // Engine Pie chart
@@ -185,7 +200,7 @@
                         latitude: lat,
                         longitude: lng,
                         value: currentBid / 1000.0,
-                        description: busData[busId].assetShortDesc
+                        description: busData[busId].assetShortDesc,
                     })
                 }
                 for (const engine in geoEngineSeries) {
@@ -197,20 +212,23 @@
                 new Chart(geoCtx, {
                     type: 'bubbleMap',
                     data: {
-                        labels: [],
-                        datasets: [geoEngineSeries["CAT 3126"], geoEngineSeries["Cummins"], geoEngineSeries["V8"], geoEngineSeries["DT466e"], geoEngineSeries["T444e"], geoEngineSeries["5.9 Cummins"], geoEngineSeries["C10"], geoEngineSeries["AT545"],],
+                        labels: [engines],
+                        datasets: [geoEngineSeries["CAT 3126"], geoEngineSeries["Cummins"], geoEngineSeries["V8"], geoEngineSeries["DT466e"], geoEngineSeries["5.9 Cummins"], geoEngineSeries["C10"], geoEngineSeries["AT545"], geoEngineSeries["T444e"],],
                     },
                     options: {
                         plugins: {
                             legend: {
                                 display: false
                             },
-                            datalabels: {
-                                align: 'top',
-                                formatter: (v) => {
-                                    return v.description;
-                                }
+                        },
+                        backgroundColor: (data) => {
+                            const engine = data.dataset.label
+                            const average = engineAverages[engine]
+                            const colors = []
+                            for (const d in data.dataset.data) {
+                                colors.push(data.dataset.data[d].value * 1000.0 > average ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75,192,94,0.2)')
                             }
+                            return colors
                         },
                         scales: {
                             projection: {
