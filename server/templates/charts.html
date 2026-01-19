@@ -78,6 +78,9 @@
             const engines = {}
             const histogramMap = {}
             const histogram = []
+            const histBinLabels = [...Array(16).keys().map((id) => {
+                return "" + (id * 500);
+            })]
 
 
             for (const busId in busData) {
@@ -95,11 +98,7 @@
                 if (!(engine in histogramMap)) {
                     histogramMap[engine] = {
                         label: engine,
-                        labels: [...Array(16).keys().map((id) => {
-                            return "" + (id * 500);
-                        })],
-                        data: [...Array(16).fill(0)],
-                        borderWidth: 1
+                        data: [...Array(16).fill(4)],
                     }
                 }
                 const histBin = Math.min(Math.floor(currentBid / 500), 15)
@@ -134,23 +133,11 @@
             new Chart(priceCtx, priceChartConfig); // Price Bubble
 
             new Chart(histCtx, {
-                type: 'bar',
+                type: 'line',
                 data: {
-                    datasets: [histogramMap["CAT 3126"], histogramMap["Cummins"], histogramMap["V8"], histogramMap["DT466e"], histogramMap["T444e"], histogramMap["5.9 Cummins"],histogramMap["C10"],histogramMap["AT545"],]
+                    labels: histBinLabels,
+                    datasets: [histogramMap["CAT 3126"], histogramMap["Cummins"], histogramMap["V8"], histogramMap["DT466e"], histogramMap["T444e"], histogramMap["5.9 Cummins"], histogramMap["C10"], histogramMap["AT545"],]
                 },
-                options: {
-                    scales: {
-                        // x: {
-                        //     barPercentage: 1.3,
-                        //     ticks: {
-                        //         max: 3,
-                        //     }
-                        // },
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
             });
             new Chart(pieCtx, { // Engine Pie chart
                 type: 'pie',
@@ -211,7 +198,7 @@
                     type: 'bubbleMap',
                     data: {
                         labels: [],
-                        datasets: [geoEngineSeries["CAT 3126"], geoEngineSeries["Cummins"], geoEngineSeries["V8"], geoEngineSeries["DT466e"], geoEngineSeries["T444e"], geoEngineSeries["5.9 Cummins"],geoEngineSeries["C10"],geoEngineSeries["AT545"],],
+                        datasets: [geoEngineSeries["CAT 3126"], geoEngineSeries["Cummins"], geoEngineSeries["V8"], geoEngineSeries["DT466e"], geoEngineSeries["T444e"], geoEngineSeries["5.9 Cummins"], geoEngineSeries["C10"], geoEngineSeries["AT545"],],
                     },
                     options: {
                         plugins: {
