@@ -1,5 +1,6 @@
 import os
 import time
+from audioop import avg
 from datetime import datetime, timedelta
 from threading import Thread
 
@@ -230,7 +231,9 @@ class Busses(Thread):
                 pass
             if time_since_last_update.total_seconds() < BUS_POLL_INTERVAL:
                 continue
-            if bus.get("assetAuctionEndDateUtc") and datetime.strptime(bus.get("assetAuctionEndDateUtc"),'%Y-%m-%dT%H:%M:%SZ')  < (datetime.utcnow() + timedelta(hours=24)):
+            if bus.get("assetAuctionEndDateUtc") and datetime.strptime(bus.get("assetAuctionEndDateUtc"),
+                                                                       '%Y-%m-%dT%H:%M:%SZ') < (
+                    datetime.utcnow() + timedelta(hours=24)):
                 continue
             if bus.get('assetLongDesc', False) and not bus.get('hidden', False):
                 bus_bids = self.get_bus_bids(bus_id)
@@ -285,15 +288,15 @@ class Busses(Thread):
             bus['timeRemaining'] = time_left_formatted
         modified_desc = bus.get('assetLongDesc', '').lower() + bus.get('note', '').lower()
         tag_map = {
-            "7.6":"DT466e",
+            "7.6": "DT466e",
             "466": "DT466e",
-            "7.2":"CAT 3126",
+            "7.2": "CAT 3126",
             "3126": "CAT 3126",
-            "5.9":"5.9 Cummins",
-            "6.7":"Cummins",
+            "5.9": "5.9 Cummins",
+            "6.7": "Cummins",
             "cummins": "Cummins",
-            "6.4":"V8",
-            "v8":"V8",
+            "6.4": "V8",
+            "v8": "V8",
             "10.3": "C10",
             "c10": "C10",
             "7.3": "T444e",
@@ -332,14 +335,54 @@ class Busses(Thread):
 
     def bidders(self):
         bidders = {}
+        bidder_map = {}
+        last_bids = {}
+        bidder_final_bids = {}
+        compressed_bids = {}
         print("Mapping bidders...")
-        for bus_id in tqdm(self.busses.keys()):
+
+        for bus_id in self.bids:
+            bus_bidders = set()
+            high_bids = {}
+            high_bid_details = {}
             for bid in self.bids.get(bus_id, []):
                 bidder = bid.get('buyerId')
+                if not bidder:
+                    continue
+                price = bid.get("price")
+                bus_bidders.add(bidder)
+                high_bid = high_bids.get(bidder, 0)
+                if price > high_bid:
+                    high_bids[bidder] = price
+                    high_bid_details[bidder] = bid
+            compressed_bids[bus_id] = high_bid_details
+            for bidder in high_bids:
+                if bidder not in bidder_final_bids:
+                    bidder_final_bids[bidder] = []
+                bidder_final_bids[bidder].append(high_bids[bidder])
+
+        for bus_id in compressed_bids:
+            for bidder in compressed_bids[bus_id]:
+                last_bid = compressed_bids[bus_id][bidder]
+                if bidder in last_bids:
+                    potential_bid = last_bids[bidder]
+                    if datetime.strptime(potential_bid.timestamp, '%Y-%m-%d %H:%M:%S') > datetime.strptime(
+                            last_bid.timestamp, '%Y-%m-%d %H:%M:%S'):
+                        last_bids[bidder] = potential_bid
+
+        for bus_id in self.busses.keys():
+            for bidder in compressed_bids.get(bus_id, []):
+                bid = compressed_bids[bus_id][bidder]
                 if bidder:
                     if bidder not in bidders:
                         bidders[bidder] = []
                     bidders[bidder].append(bus_id)
+                    if bidder not in bidder_map:
+                        bidder_map[bidder] = {}
+                    if bus_id not in bidder_map[bidder]:
+                        bidder_map[bidder][bus_id] = []
+                    bidder_map[bidder][bus_id].append(bid)
+
         graph = {"nodes": [], "links": [], "details": {}}
         bus_ids = set()
         bidder_ids = set()
@@ -347,16 +390,21 @@ class Busses(Thread):
             bidder_ids.add(bidder)
             for bus_id in buses:
                 bus_ids.add(bus_id)
-                graph['links'].append({'source': bidder, 'target': bus_id})
+                graph['links'].append(
+                    {'source': bidder, 'target': bus_id, "price": compressed_bids[bus_id][bidder].get('price', 0)})
         for bus_id in tqdm(self.busses.keys()):
             hidden = self.busses[bus_id].get('hidden', False)
             if not hidden:
                 bus_ids.add(bus_id)
         for bus_id in bus_ids:
-            graph['nodes'].append({'id': bus_id, 'group': 'bus'})
+            graph['nodes'].append(
+                {'id': bus_id,
+                 'group': 'bus',
+                 "price": self.busses.get(bus_id, {}).get("currentBid")})
             graph['details'][bus_id] = self.busses.get(bus_id, {})
         for bidder in bidder_ids:
-            graph['nodes'].append({'id': bidder, 'group': 'bidder'})
+            graph['nodes'].append({'id': bidder, 'group': 'bidder',
+                                   "price": round(sum(bidder_final_bids[bidder]) / float(len(bidder_final_bids[bidder])),2)})
         return graph
 
     def run(self):
