@@ -252,9 +252,10 @@ class Busses(Thread):
                         self.bids[bus_id].append(bid_entry)
                         self.new_bid_data = True
                 existing_bids = {bid.get("price"): bid for bid in self.bids.get(bus_id, [])}
-                highest_bid = max(existing_bids.keys())
-                bus['lastBidUpdate'] = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-                bus['currentBid'] = highest_bid
+                if existing_bids:
+                    highest_bid = max(existing_bids.keys())
+                    bus['lastBidUpdate'] = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+                    bus['currentBid'] = highest_bid
                 self.new_data = True
                 self.update_bid_data(bus_id, bus)
         self.save_data()
