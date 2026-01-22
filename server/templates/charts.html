@@ -222,6 +222,24 @@
                             legend: {
                                 display: false
                             },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        let label = context.dataset.label || '';
+
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.raw.value !== null) {
+                                            label += new Intl.NumberFormat('en-US', {
+                                                style: 'currency',
+                                                currency: 'USD'
+                                            }).format(context.raw.value * 1000.0);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
                         },
                         backgroundColor: (data) => {
                             const engine = data.dataset.label
